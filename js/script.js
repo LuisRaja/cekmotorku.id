@@ -86,6 +86,7 @@ function setSvcPill(el){
 
 /* ============ NAV ============ */
 function go(id){
+  if(id==='menu'){setTimeout(startHeroCarousel,100);}
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById(id);
   el.classList.add('active');
@@ -528,7 +529,33 @@ function switchResTab(t){
 }
 function openMaps(lat,lng){window.open(`https://maps.google.com/dir/?api=1&destination=${lat},${lng}`,'_blank');}
 
+/* ============ HERO CAROUSEL ============ */
+let heroInterval = null;
+function goToSlide(idx) {
+  const track = document.getElementById('hero-track');
+  const dots = document.querySelectorAll('#hero-dots .carousel-dot');
+  if (!track || !dots.length) return;
+  const slideWidth = track.firstElementChild?.offsetWidth || 420;
+  track.style.transform = `translateX(-${idx * slideWidth}px)`;
+  dots.forEach(d => d.classList.toggle('active', parseInt(d.dataset.slide) === idx));
+}
+function startHeroCarousel() {
+  clearInterval(heroInterval);
+  const dots = document.querySelectorAll('#hero-dots .carousel-dot');
+  if (!dots.length) return;
+  let current = 0;
+  heroInterval = setInterval(() => {
+    current = (current + 1) % dots.length;
+    goToSlide(current);
+  }, 4000);
+}
+
 /* ============ INIT ============ */
 (function init(){
   if(state.user){hydrateUser();go('menu');}
+  startHeroCarousel();
+  window.addEventListener('resize', () => {
+    const activeDot = document.querySelector('#hero-dots .carousel-dot.active');
+    if (activeDot) goToSlide(parseInt(activeDot.dataset.slide));
+  });
 })();
