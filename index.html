@@ -67,7 +67,6 @@
     .btn-ghost{ @apply bg-surface2 text-txt1 border border-white/[.08]; }
     .btn-ghost:hover{ @apply bg-white/[.04]; }
     .btn-danger-outline{ @apply bg-transparent text-danger border border-danger/30; }
-    .status-bar{ @apply h-11 flex items-center justify-between px-5 shrink-0 bg-ink relative; }
     .top-header{ @apply flex items-center justify-between px-5 py-3 bg-ink border-b border-white/[.06] shrink-0; }
     .icon-btn{ @apply w-9 h-9 rounded-xl grid place-items-center bg-surface2 border border-white/[.08] text-txt1 transition-transform duration-300 active:scale-90; }
     .icon-btn:hover{ @apply bg-white/[.06]; }
@@ -275,7 +274,7 @@
 
   <!-- ============== 1. LANDING ============== -->
   <section id="landing" class="screen active bg-[radial-gradient(ellipse_600px_360px_at_30%_0%,rgba(198,255,60,.10),transparent_60%)] items-center justify-center text-center px-6 py-8">
-    <div class="status-bar"></div>
+
 
     <div class="flex-1 flex flex-col items-center justify-center w-full">
       <div class="anim d1 flex flex-col items-center mb-8">
@@ -307,7 +306,7 @@
 
   <!-- ============== 2. MENU / HOME ============== -->
   <section id="menu" class="screen">
-    <div class="status-bar"></div>
+
 
     <!-- Home Header -->
     <div class="home-header">
@@ -472,7 +471,7 @@
 
   <!-- ============== 3a. BENGKEL PANGGILAN ============== -->
   <section id="callout" class="screen">
-    <div class="status-bar"></div>
+
     <div class="top-header">
       <div class="flex items-center gap-3">
         <button class="icon-btn" onclick="go('menu')"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></button>
@@ -496,7 +495,7 @@
 
   <!-- ============== 3b. SETTINGS ============== -->
   <section id="settings" class="screen">
-    <div class="status-bar"></div>
+
     <div class="top-header">
       <button class="icon-btn" onclick="go('menu')"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></button>
       <span class="text-[16px] font-extrabold text-txt1 tracking-tight">Pengaturan</span>
@@ -570,7 +569,7 @@
 
   <!-- ============== 4. GARAGE ============== -->
   <section id="garage" class="screen">
-    <div class="status-bar"></div>
+
     <div class="top-header">
       <button class="icon-btn" onclick="go('menu')"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></button>
       <span class="text-[16px] font-extrabold text-txt1 tracking-tight">Garasi Saya</span>
@@ -584,7 +583,7 @@
 
   <!-- ============== 4b. RIWAYAT DIAGNOSA ============== -->
   <section id="riwayat" class="screen">
-    <div class="status-bar"></div>
+
     <div class="top-header">
       <button class="icon-btn" onclick="go('menu')"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></button>
       <span class="text-[16px] font-extrabold text-txt1 tracking-tight">Riwayat Diagnosa</span>
@@ -624,7 +623,7 @@
 
   <!-- ============== 5. WIZARD ============== -->
   <section id="wizard" class="screen">
-    <div class="status-bar"></div>
+
     <div class="top-header">
       <button class="icon-btn" onclick="wizardBack()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></button>
       <span class="text-[16px] font-extrabold text-txt1 tracking-tight">Tambah Motor</span>
@@ -639,7 +638,7 @@
 
   <!-- ============== 6. CHAT ============== -->
   <section id="chat-screen" class="screen">
-    <div class="status-bar"></div>
+
     <div class="top-header">
       <button class="icon-btn" onclick="go('menu')"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></button>
       <div class="flex flex-col items-center">
@@ -658,7 +657,7 @@
 
   <!-- ============== 7. RESULT ============== -->
   <section id="result" class="screen">
-    <div class="status-bar"></div>
+
     <div class="top-header">
       <button class="icon-btn" onclick="go('menu')"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></button>
       <span class="text-[16px] font-extrabold text-txt1 tracking-tight">Hasil Diagnosis</span>
