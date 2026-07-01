@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#0B0C0E" />
+<title>cekMotormu.id — AI Acoustic Motor Diagnostic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink:       '#0B0C0E',
+          surface:   '#16171A',
+          surface2:  '#1E2023',
+          line:      '#26282C',
+          lime:      '#C6FF3C',
+          limedeep:  '#93D400',
+          txt1:      '#F4F5F1',
+          txt2:      '#9A9DA6',
+          txt3:      '#65686F',
+          ok:        '#34D399',
+          okdim:     '#0F2A22',
+          warn:      '#FFB020',
+          warndim:   '#2E2410',
+          danger:    '#FF5C5C',
+          dangerdim: '#2E1414',
+        },
+        fontFamily: {
+          sans: ['"Plus Jakarta Sans"','system-ui','sans-serif'],
+          mono: ['"Space Grotesk"','system-ui','sans-serif'],
+        },
+        boxShadow: {
+          lime: '0 8px 24px rgba(198,255,60,.25)',
+          limelg: '0 10px 34px rgba(198,255,60,.32)',
+        }
+      }
+    }
+  }
+</script>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div id="phone" class="relative z-10 w-full max-w-[420px] min-h-dvh flex flex-col bg-ink overflow-hidden mx-auto md:my-6 md:rounded-[52px] md:shadow-[0_0_0_10px_#1c1c1e,0_0_0_11px_#2a2a2e,0_0_70px_rgba(0,0,0,.7)]">
+
+  <!-- ============== 1. LANDING ============== -->
+  <section id="landing" class="screen active bg-[radial-gradient(ellipse_600px_360px_at_30%_0%,rgba(198,255,60,.10),transparent_60%)] items-center justify-center text-center px-6 py-8">
+    <div class="status-bar">
+      <span class="text-[15px] font-bold text-txt1 tracking-tight">9:41</span>
+      <div class="dyn-island"></div>
+      <div class="flex items-center gap-1.5 text-txt1">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="2" y="14" width="3" height="6" rx=".5"/><rect x="7" y="11" width="3" height="9" rx=".5"/><rect x="12" y="8" width="3" height="12" rx=".5"/><rect x="17" y="5" width="3" height="15" rx=".5"/></svg>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 21a2 2 0 110-4 2 2 0 010 4zm-6.2-6.2a8.8 8.8 0 0112.4 0 1 1 0 01-1.4 1.4 6.8 6.8 0 00-9.6 0 1 1 0 01-1.4-1.4zm-2.8-2.8a12.8 12.8 0 0118 0 1 1 0 01-1.4 1.4 10.8 10.8 0 00-15.2 0 1 1 0 01-1.4-1.4z"/></svg>
+        <svg viewBox="0 0 24 24" width="22" height="14"><rect x=".5" y="4" width="18" height="16" rx="2.5" stroke-width="1.5" fill="none" stroke="currentColor"/><rect x="2.5" y="6" width="14" height="12" rx="1.5" fill="currentColor"/><path d="M20 9.5v5a2.5 2.5 0 000-5z" fill="currentColor" opacity=".6"/></svg>
+      </div>
+    </div>
+
+    <div class="flex-1 flex flex-col items-center justify-center w-full">
+      <div class="anim d1 flex flex-col items-center mb-8">
+        <div class="w-[100px] h-[100px] rounded-[30px] bg-lime/10 border border-lime/25 shadow-[0_0_50px_rgba(198,255,60,.18)] grid place-items-center mb-6">
+          <svg viewBox="0 0 52 52" fill="none" width="52" height="52">
+            <circle cx="26" cy="26" r="26" fill="url(#lg1)" opacity=".14"/>
+            <path d="M10 30a8 8 0 1016 0 8 8 0 00-16 0z" stroke="url(#lg1)" stroke-width="2.5" fill="none"/>
+            <path d="M26 30a8 8 0 1016 0 8 8 0 00-16 0z" stroke="url(#lg1)" stroke-width="2.5" fill="none"/>
+            <path d="M18 30h8M22 22l6-6h8l4 6H22zM30 16l2 6" stroke="url(#lg1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 28l6-6" stroke="url(#lg1)" stroke-width="2.5" stroke-linecap="round"/>
+            <defs><linearGradient id="lg1" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse"><stop stop-color="#C6FF3C"/><stop offset="1" stop-color="#93D400"/></linearGradient></defs>
+          </svg>
+        </div>
+        <h1 class="text-[29px] font-extrabold tracking-tight text-txt1 leading-none">cekMotormu<span class="grad-text">.id</span></h1>
+        <p class="text-[15px] text-txt2 mt-2 font-semibold">AI Acoustic Motor Diagnostic</p>
+        <p class="text-[12px] text-txt3 mt-1 max-w-[260px] leading-relaxed">Rekam suara motor, dapatkan diagnosis akurat berbasis AI</p>
+      </div>
+
+      <div class="anim d3 w-full flex flex-col gap-3">
+        <button class="google-btn" onclick="login()">
+          <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Masuk dengan Google
+        </button>
+        <p class="text-[11px] text-txt3 text-center leading-relaxed">Dengan masuk, kamu setuju dengan Ketentuan Layanan &amp; Kebijakan Privasi</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============== 2. MENU / HOME ============== -->
+  <section id="menu" class="screen">
+    <div class="status-bar">
+      <span class="text-[15px] font-bold text-txt1 tracking-tight">9:41</span>
+      <div class="dyn-island"></div>
+      <div class="flex items-center gap-1.5 text-txt1">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="2" y="14" width="3" height="6" rx=".5"/><rect x="7" y="11" width="3" height="9" rx=".5"/><rect x="12" y="8" width="3" height="12" rx=".5"/><rect x="17" y="5" width="3" height="15" rx=".5"/></svg>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 21a2 2 0 110-4 2 2 0 010 4zm-6.2-6.2a8.8 8.8 0 0112.4 0 1 1 0 01-1.4 1.4 6.8 6.8 0 00-9.6 0 1 1 0 01-1.4-1.4zm-2.8-2.8a12.8 12.8 0 0118 0 1 1 0 01-1.4 1.4 10.8 10.8 0 00-15.2 0 1 1 0 01-1.4-1.4z"/></svg>
+        <svg viewBox="0 0 24 24" width="22" height="14"><rect x=".5" y="4" width="18" height="16" rx="2.5" stroke-width="1.5" fill="none" stroke="currentColor"/><rect x="2.5" y="6" width="14" height="12" rx="1.5" fill="currentColor"/><path d="M20 9.5v5a2.5 2.5 0 000-5z" fill="currentColor" opacity=".6"/></svg>
+      </div>
+    </div>
+
+    <!-- Home Header -->
+    <div class="home-header">
+      <div class="flex items-center gap-2">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M13 10V3L4 14h7v7l9-11h-7z" fill="#C6FF3C" style="filter:drop-shadow(0 2px 6px rgba(198,255,60,.45))"/></svg>
+        <span class="text-[21px] font-extrabold text-txt1 tracking-tight">cekMotormu</span>
+      </div>
+      <div class="flex items-center gap-2.5">
+        <button class="bell-btn" onclick="alert('Belum ada notifikasi baru.')">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          <span class="bell-dot"></span>
+        </button>
+        <button class="bell-btn" onclick="openSettings()">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="px-5 pb-3.5">
+      <div class="flex gap-2.5">
+        <div class="search-input-wrap">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-txt3 flex-shrink-0"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input type="text" placeholder="Cari layanan atau motor..." />
+        </div>
+        <button class="icon-btn !w-[46px] !h-[46px] !rounded-2xl !bg-lime/10 !border-lime/30 !text-lime" onclick="openSettings()">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="screen-scroll">
+
+      <!-- Hero Banner -->
+      <div class="px-5 pb-2 anim d2">
+        <div class="hero-card">
+          <span class="hero-tag">🔊 Populer</span>
+          <h3 class="hero-title">Diagnosa Motor dengan AI Akustik</h3>
+          <p class="hero-sub">Rekam suara mesin &amp; CVT, dapatkan diagnosis instan.</p>
+          <button class="hero-btn" onclick="startChat()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+            Rekam Sekarang
+          </button>
+          <div class="absolute right-0 bottom-0 w-[46%] h-full flex items-end justify-center pointer-events-none z-[2] opacity-90">
+            <svg viewBox="0 0 100 160" fill="none" style="width:88%">
+              <ellipse cx="50" cy="140" rx="40" ry="12" fill="#0B0C0E" opacity=".16"/>
+              <path d="M20 60C20 60 10 80 10 100C10 120 20 135 50 135C80 135 90 120 90 100C90 80 80 60 80 60L65 30H35L20 60Z" fill="#0B0C0E" opacity=".9"/>
+              <circle cx="50" cy="20" r="18" fill="#0B0C0E" opacity=".9"/>
+              <path d="M35 60L50 45L65 60" stroke="#C6FF3C" stroke-width="4"/>
+            </svg>
+          </div>
+        </div>
+        <div class="flex justify-center gap-1.5 pt-2">
+          <div class="carousel-dot active"></div><div class="carousel-dot"></div><div class="carousel-dot"></div>
+        </div>
+      </div>
+
+      <!-- Service Pills Section -->
+      <div class="section-head anim d3">
+        <h4>Layanan Kami</h4>
+      </div>
+      <div class="flex gap-2.5 px-5 pb-4 overflow-x-auto anim d3" style="scrollbar-width:none">
+        <div class="svc-pill active" onclick="setSvcPill(this)">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+          Diagnosa AI
+        </div>
+        <div class="svc-pill" onclick="setSvcPill(this)">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Servis &amp; Reparasi
+        </div>
+        <div class="svc-pill" onclick="setSvcPill(this)">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Bengkel Panggilan
+        </div>
+      </div>
+
+      <!-- Service Grid -->
+      <div class="svc-grid anim d4">
+        <div class="svc-item" onclick="openGarage()">
+          <div class="svc-tile"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></div>
+          <div class="svc-lbl">Garasi Saya</div>
+        </div>
+        <div class="svc-item" onclick="startChat()">
+          <span class="svc-tag ok">AI</span>
+          <div class="svc-tile ok"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg></div>
+          <div class="svc-lbl">Quick Help</div>
+        </div>
+        <div class="svc-item" onclick="openCallout()">
+          <span class="svc-tag">BARU</span>
+          <div class="svc-tile"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg></div>
+          <div class="svc-lbl">Bengkel Panggilan</div>
+        </div>
+        <div class="svc-item" onclick="startWizard()">
+          <div class="svc-tile ok"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16m8-8H4"/></svg></div>
+          <div class="svc-lbl">Tambah Motor</div>
+        </div>
+        <div class="svc-item" onclick="openMitra()">
+          <div class="svc-tile"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+          <div class="svc-lbl">Bengkel Mitra</div>
+        </div>
+        <div class="svc-item" onclick="openRiwayat()">
+          <div class="svc-tile"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+          <div class="svc-lbl">Riwayat</div>
+        </div>
+        <div class="svc-item" onclick="alert('Promo & poin segera hadir.')">
+          <div class="svc-tile"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg></div>
+          <div class="svc-lbl">Promo</div>
+        </div>
+        <div class="svc-item" onclick="openSettings()">
+          <div class="svc-tile"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+          <div class="svc-lbl">Pengaturan</div>
+        </div>
+      </div>
+
+      <!-- Partner / brand row -->
+      <div class="section-head anim d3">
+        <h4>Merek yang Kami Dukung</h4>
+        <span class="more-lnk" onclick="startWizard()">Tambah ›</span>
+      </div>
+      <div class="partner-row anim d3">
+        <div class="partner-badge" onclick="startWizard()"><div class="partner-ic">🔴</div><span class="partner-lbl">Honda</span></div>
+        <div class="partner-badge" onclick="startWizard()"><div class="partner-ic">🔵</div><span class="partner-lbl">Yamaha</span></div>
+        <div class="partner-badge" onclick="startWizard()"><div class="partner-ic">⚪</div><span class="partner-lbl">Suzuki</span></div>
+        <div class="partner-badge" onclick="startWizard()"><div class="partner-ic">🟢</div><span class="partner-lbl">Kymco</span></div>
+        <div class="partner-badge" onclick="startWizard()"><div class="partner-ic">🟣</div><span class="partner-lbl">TVS</span></div>
+        <div class="partner-badge" onclick="startWizard()"><div class="partner-ic">🟡</div><span class="partner-lbl">Vespa</span></div>
+      </div>
+
+      <!-- Motor di Garasi (signature ring cards) -->
+      <div class="section-head anim d4">
+        <h4>Motor di Garasi</h4>
+        <span class="more-lnk" onclick="openGarage()">Lihat semua ›</span>
+      </div>
+      <div class="moto-strip anim d4" id="home-garage-strip"></div>
+
+      <!-- Reco section -->
+      <div class="flex items-center gap-2.5 px-5 pt-5 pb-3 anim d5">
+        <div class="text-[13.5px] font-extrabold text-txt1">Lanjut diagnosa lagi</div>
+        <div class="reco-head-line"></div>
+      </div>
+      <div class="card reco-strip anim d5" id="reco-card" onclick="recoAction()">
+        <div class="reco-strip-ic" id="reco-ic">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+        </div>
+        <div class="min-w-0">
+          <div class="reco-strip-lbl" id="reco-lbl">✨ REKOMENDASI</div>
+          <div class="reco-strip-nm" id="reco-nm">Rekam suara motor kamu</div>
+        </div>
+        <div class="reco-strip-go">Cek ›</div>
+      </div>
+
+      <!-- Hint -->
+      <div class="hint-strip anim d6">
+        <span class="text-[14px] flex-shrink-0">💡</span>
+        <span>Pilih motor dari garasi untuk diagnosis lebih akurat berdasarkan model &amp; tahun produksi.</span>
+      </div>
+
+    </div><!-- /screen-scroll -->
+  </section>
+
+
+  <!-- ============== 3a. BENGKEL PANGGILAN ============== -->
+  <section id="callout" class="screen">
+    <div class="status-bar"><span class="text-[15px] font-bold text-txt1 tracking-tight">9:41</span><div class="dyn-island"></div><div class="flex items-center gap-1.5 text-txt1"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="2" y="14" width="3" height="6" rx=".5"/><rect x="7" y="11" width="3" height="9" rx=".5"/><rect x="12" y="8" width="3" height="12" rx=".5"/><rect x="17" y="5" width="3" height="15" rx=".5"/></svg></div></div>
+    <div class="top-header">
+      <div class="flex items-center gap-3">
+        <button class="icon-btn" onclick="go('menu')"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></button>
+        <div class="flex flex-col items-start">
+          <span class="text-[16px] font-extrabold text-txt1 tracking-tight">Bengkel Panggilan</span>
+          <span class="text-[11px] font-semibold text-txt3 uppercase tracking-wide">Mekanik datang ke lokasimu</span>
+        </div>
+      </div>
+      <div class="loc-pill">📍 Bali</div>
+    </div>
+
+    <div class="screen-scroll" style="padding-top:16px">
+      <div class="info-banner anim d1">
+        <span class="flex-shrink-0">ℹ️</span>
+        <span><b class="text-lime">Data contoh (dummy).</b> Nanti diganti dengan data mitra bengkel panggilan kamu.</span>
+      </div>
+      <div class="px-5 flex flex-col gap-3" id="callout-list"></div>
+    </div>
+  </section>
+
+
+  <!-- ============== 3b. SETTINGS ============== -->
+  <section id="settings" class="screen">
+    <div class="status-bar"><span class="text-[15px] font-bold text-txt1 tracking-tight">9:41</span><div class="dyn-island"></div><div class="flex items-center gap-1.5 text-txt1"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="2" y="14" width="3" height="6" rx=".5"/><rect x="7" y="11" width="3" height="9" rx=".5"/><rect x="12" y="8" width="3" height="12" rx=".5"/><rect x="17" y="5" width="3" height="15" rx=".5"/></svg></div></div>
+    <div class="top-header">
+      <button class="icon-btn" onclick="go('menu')"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></button>
+      <span class="text-[16px] font-extrabold text-txt1 tracking-tight">Pengaturan</span>
+      <div class="w-9"></div>
+    </div>
+
+    <div class="screen-scroll" style="padding-top:16px">
+      <div class="flex items-center gap-3.5 px-5 py-4 anim d1">
+        <div class="user-avatar" id="set-avatar">C</div>
+        <div class="flex-1 min-w-0">
+          <div id="set-name" class="font-extrabold text-[16px] text-txt1">Casual Biker</div>
+          <div id="set-email" class="text-[12px] text-txt3 truncate mt-0.5">biker@gmail.com</div>
+        </div>
+        <span class="badge-online"><span class="online-dot"></span>Online</span>
+      </div>
+
+      <div class="px-5 mb-5 anim d2">
+        <div class="set-lbl">Preferensi</div>
+        <div class="set-card">
+          <div class="set-row">
+            <div class="set-ic blue"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg></div>
+            <div><div class="set-nm">Notifikasi</div><div class="set-sub">Info diagnosis &amp; promo</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"><i></i></div>
+          </div>
+          <div class="set-row">
+            <div class="set-ic blue"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+            <div><div class="set-nm">Akses Lokasi</div><div class="set-sub">Cari bengkel terdekat</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"><i></i></div>
+          </div>
+          <div class="set-row">
+            <div class="set-ic blue"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg></div>
+            <div><div class="set-nm">Akses Mikrofon</div><div class="set-sub">Rekam suara motor</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"><i></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-5 mb-8 anim d3">
+        <div class="set-lbl">Lainnya</div>
+        <div class="set-card">
+          <div class="set-row" onclick="openGarage()">
+            <div class="set-ic"><span class="text-[18px]">🏍️</span></div>
+            <div><div class="set-nm">Garasi Saya</div><div class="set-sub">Kelola motor</div></div>
+            <div class="text-txt3"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+          </div>
+          <div class="set-row" onclick="openRiwayat()">
+            <div class="set-ic"><span class="text-[18px]">🕘</span></div>
+            <div><div class="set-nm">Riwayat Diagnosa</div><div class="set-sub">Semua hasil diagnosis</div></div>
+            <div class="text-txt3"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+          </div>
+          <div class="set-row" onclick="alert('cekMotormu.id v2.0 — AI Acoustic Motor Diagnostic')">
+            <div class="set-ic"><span class="text-[18px]">ℹ️</span></div>
+            <div><div class="set-nm">Tentang Aplikasi</div><div class="set-sub">Versi 2.0.0</div></div>
+            <div class="text-txt3"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+          </div>
+          <div class="set-row" onclick="alert('Hubungi kami: support@cekmotormu.id')">
+            <div class="set-ic"><span class="text-[18px]">💬</span></div>
+            <div><div class="set-nm">Bantuan</div><div class="set-sub">Pusat bantuan &amp; kontak</div></div>
+            <div class="text-txt3"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+          </div>
+          <div class="set-row" onclick="logout()">
+            <div class="set-ic red"><span class="text-[18px]">🚪</span></div>
+            <div><div class="set-nm text-danger">Keluar</div><div class="set-sub">Logout dari akun</div></div>
+            <div class="text-txt3"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============== 4. GARAGE ============== -->
+  <section id="garage" class="screen">
+    <div class="status-bar"><span class="text-[15px] font-bold text-txt1 tracking-tight">9:41</span><div class="dyn-island"></div><div class="flex items-center gap-1.5 text-txt1"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="2" y="14" width="3" height="6" rx=".5"/><rect x="7" y="11" width="3" height="9" rx=".5"/><rect x="12" y="8" width="3" height="12" rx=".5"/><rect x="17" y="5" width="3" height="15" rx=".5"/></svg></div></div>
+    <div class="top-header">
+      <button class="icon-btn" onclick="go('menu')"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></button>
+      <span class="text-[16px] font-extrabold text-txt1 tracking-tight">Garasi Saya</span>
+      <button class="bg-lime text-ink font-extrabold text-[13px] px-4 py-2 rounded-xl transition-transform duration-300 active:scale-95" onclick="startWizard()">+ Tambah</button>
+    </div>
+    <div class="screen-scroll" style="padding-top:4px">
+      <div id="garage-list"></div>
+    </div>
+  </section>
+
+
+  <!-- ============== 4b. RIWAYAT DIAGNOSA ============== -->
+  <section id="riwayat" class="screen">
+    <div class="status-bar"><span class="text-[15px] font-bold text-txt1 tracking-tight">9:41</span><div class="dyn-island"></div><div class="flex items-center gap-1.5 text-txt1"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="2" y="14" width="3" height="6" rx=".5"/><rect x="7" y="11" width="3" height="9" rx=".5"/><rect x="12" y="8" width="3" height="12" rx=".5"/><rect x="17" y="5" width="3" height="15" rx=".5"/></svg></div></div>
+    <div class="top-header">
+      <button class="icon-btn" onclick="go('menu')"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></button>
+      <span class="text-[16px] font-extrabold text-txt1 tracking-tight">Riwayat Diagnosa</span>
+      <div class="w-9"></div>
+    </div>
+    <div class="screen-scroll" style="padding-top:4px">
+      <div class="hist-summary anim d1">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-[11px] text-txt3 font-bold uppercase tracking-wide">Total Diagnosa</div>
+            <div class="text-[26px] font-extrabold font-mono text-lime mt-0.5" id="hist-total">0</div>
+          </div>
+          <div class="w-14 h-14 rounded-2xl bg-lime/10 border border-lime/25 grid place-items-center text-[24px]">🩺</div>
+        </div>
+        <div class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-white/[.06]">
+          <div>
+            <div class="hist-stat-val text-danger" id="hist-crit">0</div>
+            <div class="hist-stat-lbl">Kondisi Kritis</div>
+          </div>
+          <div>
+            <div class="hist-stat-val text-warn" id="hist-warn">0</div>
+            <div class="hist-stat-lbl">Perlu Perhatian</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hist-tabs anim d2">
+        <div class="hist-tab on" data-htab="all" onclick="switchHistTab('all')">Semua</div>
+        <div class="hist-tab" data-htab="crit" onclick="switchHistTab('crit')">Kritis</div>
+        <div class="hist-tab" data-htab="warn" onclick="switchHistTab('warn')">Perhatian</div>
+      </div>
+
+      <div id="hist-list" class="anim d3"></div>
+    </div>
+  </section>
+
+
+  <!-- ============== 5. WIZARD ============== -->
+  <section id="wizard" class="screen">
+    <div class="status-bar"><span class="text-[15px] font-bold text-txt1 tracking-tight">9:41</span><div class="dyn-island"></div><div class="flex items-center gap-1.5 text-txt1"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="2" y="14" width="3" height="6" rx=".5"/><rect x="7" y="11" width="3" height="9" rx=".5"/><rect x="12" y="8" width="3" height="12" rx=".5"/><rect x="17" y="5" width="3" height="15" rx=".5"/></svg></div></div>
+    <div class="top-header">
+      <button class="icon-btn" onclick="wizardBack()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></button>
+      <span class="text-[16px] font-extrabold text-txt1 tracking-tight">Tambah Motor</span>
+      <div class="w-9"></div>
+    </div>
+    <div class="flex gap-2 px-5 pt-4 anim d1" id="wizard-progress">
+      <div class="wiz-seg on"></div><div class="wiz-seg"></div><div class="wiz-seg"></div><div class="wiz-seg"></div><div class="wiz-seg"></div>
+    </div>
+    <div class="flex-1 overflow-y-auto px-5 py-5" id="wizard-body"></div>
+  </section>
+
+
+  <!-- ============== 6. CHAT ============== -->
+  <section id="chat-screen" class="screen">
+    <div class="status-bar"><span class="text-[15px] font-bold text-txt1 tracking-tight">9:41</span><div class="dyn-island"></div><div class="flex items-center gap-1.5 text-txt1"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="2" y="14" width="3" height="6" rx=".5"/><rect x="7" y="11" width="3" height="9" rx=".5"/><rect x="12" y="8" width="3" height="12" rx=".5"/><rect x="17" y="5" width="3" height="15" rx=".5"/></svg></div></div>
+    <div class="top-header">
+      <button class="icon-btn" onclick="go('menu')"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></button>
+      <div class="flex flex-col items-center">
+        <span class="text-[16px] font-extrabold text-txt1 tracking-tight">Quick Help</span>
+        <span class="text-[11px] font-semibold text-txt3 uppercase tracking-wide" id="chat-sub">AI Diagnostic Assistant</span>
+      </div>
+      <span class="badge-online"><span class="online-dot"></span>AI</span>
+    </div>
+    <div class="chat-scroll" id="chat-scroll"></div>
+    <div class="rec-zone" id="rec-zone" style="display:none">
+      <button class="rec-btn" id="rec-btn" onclick="toggleRecord()">🎤</button>
+      <div class="rec-label" id="rec-label">Tekan untuk rekam 5 detik</div>
+    </div>
+  </section>
+
+
+  <!-- ============== 7. RESULT ============== -->
+  <section id="result" class="screen">
+    <div class="status-bar"><span class="text-[15px] font-bold text-txt1 tracking-tight">9:41</span><div class="dyn-island"></div><div class="flex items-center gap-1.5 text-txt1"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="2" y="14" width="3" height="6" rx=".5"/><rect x="7" y="11" width="3" height="9" rx=".5"/><rect x="12" y="8" width="3" height="12" rx=".5"/><rect x="17" y="5" width="3" height="15" rx=".5"/></svg></div></div>
+    <div class="top-header">
+      <button class="icon-btn" onclick="go('menu')"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></button>
+      <span class="text-[16px] font-extrabold text-txt1 tracking-tight">Hasil Diagnosis</span>
+      <div class="w-9"></div>
+    </div>
+    <div id="result-body" class="flex-1 overflow-y-auto" style="padding-top:16px"></div>
+  </section>
+
+
+  <!-- ============== BOTTOM NAV ============== -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <div class="nav-item on" data-nav="menu" onclick="go('menu')">
+      <div class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
+      <span class="nl">Cari</span>
+    </div>
+    <div class="nav-item" data-nav="favorit" onclick="alert('Favorit segera hadir')">
+      <div class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+      <span class="nl">Favorit</span>
+    </div>
+    <div class="nav-item" data-nav="jelajah" onclick="openGarage()">
+      <div class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z"/></svg></div>
+      <span class="nl">Jelajah</span>
+    </div>
+    <div class="nav-item" data-nav="chat-screen" onclick="startChat()">
+      <div class="ni">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        <span class="nav-dot"></span>
+      </div>
+      <span class="nl">Chat</span>
+    </div>
+    <div class="nav-item" data-nav="settings" onclick="openSettings()">
+      <div class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <span class="nl">Profil</span>
+    </div>
+  </nav>
+
+</div><!-- /phone -->
+
+<script src="js/script.js"></script>
+</body>
+</html>
