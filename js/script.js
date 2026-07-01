@@ -1,11 +1,11 @@
 /* ============ DATA ============ */
 const BRANDS = {
-  Honda:{icon:"🔴",models:[["BeAT",2008,2026],["Vario",2006,2026],["Scoopy",2010,2026],["Genio",2019,2026],["Stylo 160",2024,2026],["PCX",2010,2026],["ADV",2019,2026],["Forza 250",2018,2026]]},
-  Yamaha:{icon:"🔵",models:[["Nouvo",2002,2008],["Mio",2003,2026],["Fino",2012,2026],["Fazzio",2022,2026],["Grand Filano",2023,2026],["NMAX",2015,2026],["Aerox",2016,2026],["Lexi",2018,2026],["XMAX 250",2017,2026],["X-Ride",2013,2026],["FreeGo",2018,2026],["Gear 125",2020,2026]]},
-  Suzuki:{icon:"⚪",models:[["Spin 125",2006,2011],["Skywave 125",2007,2011],["Skydrive 125",2009,2014],["Hayate 125",2011,2014],["Nex",2011,2026],["Address",2014,2026],["Avenis 125",2022,2026],["Burgman Street",2023,2026]]},
-  Kymco:{icon:"🟢",models:[["Like 150",2015,2026],["Downtown 250",2015,2026]]},
-  TVS:{icon:"🟣",models:[["Dazz 110",2014,2020],["Callisto",2023,2026]]},
-  Vespa:{icon:"🟡",models:[["LX 150",2010,2020],["Primavera 150",2013,2026],["Sprint 150",2014,2026],["GTS 300",2016,2026]]}
+  Honda:{icon:"🔴",logo:"img/Honda.svg",models:[["BeAT",2008,2026],["Vario",2006,2026],["Scoopy",2010,2026],["Genio",2019,2026],["Stylo 160",2024,2026],["PCX",2010,2026],["ADV",2019,2026],["Forza 250",2018,2026]]},
+  Yamaha:{icon:"🔵",logo:"img/yamaha.svg",models:[["Nouvo",2002,2008],["Mio",2003,2026],["Fino",2012,2026],["Fazzio",2022,2026],["Grand Filano",2023,2026],["NMAX",2015,2026],["Aerox",2016,2026],["Lexi",2018,2026],["XMAX 250",2017,2026],["X-Ride",2013,2026],["FreeGo",2018,2026],["Gear 125",2020,2026]]},
+  Suzuki:{icon:"⚪",logo:"img/Suzuki.svg",models:[["Spin 125",2006,2011],["Skywave 125",2007,2011],["Skydrive 125",2009,2014],["Hayate 125",2011,2014],["Nex",2011,2026],["Address",2014,2026],["Avenis 125",2022,2026],["Burgman Street",2023,2026]]},
+  Kymco:{icon:"🟢",logo:"img/Kymco.svg",models:[["Like 150",2015,2026],["Downtown 250",2015,2026]]},
+  TVS:{icon:"🟣",logo:"img/TVS.svg",models:[["Dazz 110",2014,2020],["Callisto",2023,2026]]},
+  Vespa:{icon:"🟡",logo:"img/vespa.svg",models:[["LX 150",2010,2020],["Primavera 150",2013,2026],["Sprint 150",2014,2026],["GTS 300",2016,2026]]}
 };
 
 const COMPLAINTS=[
@@ -139,7 +139,7 @@ function hydrateHome(){
   if(ic){
     if(state.garage.length){
       const m=state.garage[state.garage.length-1];
-      ic.innerHTML=`<span style="font-size:22px">${m.icon}</span>`;
+      ic.innerHTML=`<img src="${BRANDS[m.brand]?.logo || ''}" class="w-7 h-7 object-contain" alt="${m.brand}">`;
       lbl.textContent='✨ MOTOR TERAKHIR';
       nm.textContent=`Diagnosa ${m.brand} ${m.model}`;
     }else{
@@ -160,7 +160,7 @@ function renderHomeGarageStrip(){
     return `
     <div class="moto-ring-card" onclick="selectMoto(${idx})">
       <div class="moto-ring" style="background:conic-gradient(#C6FF3C ${pct}%, #26282C ${pct}% 100%)">
-        <div class="moto-ring-inner">${m.icon}</div>
+        <div class="moto-ring-inner"><img src="${BRANDS[m.brand]?.logo || ''}" class="w-6 h-6 object-contain" alt="${m.brand}"></div>
       </div>
       <div class="moto-ring-name">${m.brand} ${m.model}</div>
       <div class="moto-ring-sub">Skor akustik ${pct}%</div>
@@ -192,7 +192,7 @@ function renderGarage(){
   }
   list.innerHTML=state.garage.map((m,i)=>`
     <div class="moto-card anim d${Math.min(i+2,6)}" onclick="selectMoto(${i})">
-      <div class="moto-ic">${m.icon}</div>
+      <div class="moto-ic"><img src="${BRANDS[m.brand]?.logo || ''}" class="w-full h-full object-contain p-2" alt="${m.brand}"></div>
       <div class="min-w-0 flex-1">
         <div class="moto-nm">${m.brand} ${m.model}</div>
         <div class="moto-yr">${m.type} • ${m.year}</div>
@@ -312,7 +312,7 @@ function renderWizard(){
       <div class="anim d1"><div class="wiz-title">Merek Motor</div><div class="wiz-sub">Pilih brand kesayangan</div></div>
       <div class="grid grid-cols-2 gap-2.5 anim d2">
         ${Object.keys(BRANDS).map(b=>`
-          <div class="brand-card ${d.brand===b?'sel':''}" onclick="pickBrand('${b}')"><span class="text-[22px]">${BRANDS[b].icon}</span><span class="font-bold text-[14px] text-txt1">${b}</span></div>`).join('')}
+          <div class="brand-card ${d.brand===b?'sel':''}" onclick="pickBrand('${b}')"><img src="${BRANDS[b].logo}" class="w-9 h-9 object-contain flex-shrink-0" alt="${b}"><span class="font-bold text-[14px] text-txt1">${b}</span></div>`).join('')}
       </div>`;
   }else if(s===3){
     const models=BRANDS[d.brand].models;
@@ -335,7 +335,7 @@ function renderWizard(){
   }else if(s===5){
     body.innerHTML=`
       <div class="confirm-card anim d1">
-        <div class="confirm-ic">${d.icon}</div>
+        <div class="confirm-ic"><img src="${BRANDS[d.brand]?.logo || ''}" class="w-full h-full object-contain p-2" alt="${d.brand}"></div>
         <div class="confirm-nm">${d.brand} ${d.model}</div>
         <div class="confirm-dt">${d.type} • Tahun ${d.year}</div>
         <span class="badge-ready"><span class="online-dot"></span>Siap Diagnosis</span>
