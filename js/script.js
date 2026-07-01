@@ -533,24 +533,37 @@ function openMaps(lat,lng){window.open(`https://maps.google.com/dir/?api=1&desti
 let heroInterval = null;
 let heroIdx = 0;
 const HERO_DELAY = 4000;
-function goToSlide(idx) {
+function goToSlide(idx, instant) {
   const track = document.getElementById('hero-track');
   const dots = document.querySelectorAll('#hero-dots .carousel-dot');
   if (!track || !dots.length) return;
   const slideWidth = track.firstElementChild?.offsetWidth || 420;
+  track.style.transition = instant ? 'none' : 'transform 500ms ease-in-out';
   track.style.transform = `translateX(-${idx * slideWidth}px)`;
-  dots.forEach(d => d.classList.toggle('active', parseInt(d.dataset.slide) === idx));
-  heroIdx = idx;
+  const realIdx = idx >= dots.length ? 0 : idx;
+  dots.forEach(d => d.classList.toggle('active', parseInt(d.dataset.slide) === realIdx));
+  heroIdx = realIdx;
 }
 function nextHeroSlide() {
   const dots = document.querySelectorAll('#hero-dots .carousel-dot');
-  goToSlide((heroIdx + 1) % dots.length);
+  if (!dots.length) return;
+  heroIdx = (heroIdx + 1) % dots.length;
+  if (heroIdx === 0) {
+    goToSlide(dots.length);
+    setTimeout(() => goToSlide(0, true), 500);
+  } else {
+    goToSlide(heroIdx);
+  }
 }
 function startHeroCarousel() {
   clearInterval(heroInterval);
   const dots = document.querySelectorAll('#hero-dots .carousel-dot');
-  if (!dots.length) return;
-  goToSlide(heroIdx);
+  const track = document.getElementById('hero-track');
+  if (!dots.length || !track) return;
+  if (track.children.length === dots.length) {
+    track.appendChild(track.firstElementChild.cloneNode(true));
+  }
+  goToSlide(0, true);
   heroInterval = setInterval(nextHeroSlide, HERO_DELAY);
 }
 
@@ -564,8 +577,15 @@ function startHeroCarousel() {
     ex = e.changedTouches[0].screenX;
     const diff = ex - sx;
     const dots = document.querySelectorAll('#hero-dots .carousel-dot');
-    if (Math.abs(diff) > 50) {
-      goToSlide(diff < 0 ? (heroIdx + 1) % dots.length : (heroIdx - 1 + dots.length) % dots.length);
+    if (Math.abs(diff) > 50 && dots.length) {
+      const next = diff < 0 ? (heroIdx + 1) % dots.length : (heroIdx - 1 + dots.length) % dots.length;
+      if (next === 0) {
+        goToSlide(dots.length);
+        setTimeout(() => goToSlide(0, true), 500);
+      } else {
+        goToSlide(next);
+      }
+      heroIdx = next;
     }
     heroInterval = setInterval(nextHeroSlide, HERO_DELAY);
   }, {passive:true});
