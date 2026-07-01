@@ -531,6 +531,8 @@ function openMaps(lat,lng){window.open(`https://maps.google.com/dir/?api=1&desti
 
 /* ============ HERO CAROUSEL ============ */
 let heroInterval = null;
+let heroIdx = 0;
+const HERO_DELAY = 4000;
 function goToSlide(idx) {
   const track = document.getElementById('hero-track');
   const dots = document.querySelectorAll('#hero-dots .carousel-dot');
@@ -538,17 +540,36 @@ function goToSlide(idx) {
   const slideWidth = track.firstElementChild?.offsetWidth || 420;
   track.style.transform = `translateX(-${idx * slideWidth}px)`;
   dots.forEach(d => d.classList.toggle('active', parseInt(d.dataset.slide) === idx));
+  heroIdx = idx;
+}
+function nextHeroSlide() {
+  const dots = document.querySelectorAll('#hero-dots .carousel-dot');
+  goToSlide((heroIdx + 1) % dots.length);
 }
 function startHeroCarousel() {
   clearInterval(heroInterval);
   const dots = document.querySelectorAll('#hero-dots .carousel-dot');
   if (!dots.length) return;
-  let current = 0;
-  heroInterval = setInterval(() => {
-    current = (current + 1) % dots.length;
-    goToSlide(current);
-  }, 4000);
+  goToSlide(heroIdx);
+  heroInterval = setInterval(nextHeroSlide, HERO_DELAY);
 }
+
+/* touch/swipe support */
+(function initHeroTouch() {
+  const el = document.getElementById('hero-track')?.parentElement;
+  if (!el) return;
+  let sx = 0, ex = 0;
+  el.addEventListener('touchstart', e => { sx = e.changedTouches[0].screenX; clearInterval(heroInterval); }, {passive:true});
+  el.addEventListener('touchend', e => {
+    ex = e.changedTouches[0].screenX;
+    const diff = ex - sx;
+    const dots = document.querySelectorAll('#hero-dots .carousel-dot');
+    if (Math.abs(diff) > 50) {
+      goToSlide(diff < 0 ? (heroIdx + 1) % dots.length : (heroIdx - 1 + dots.length) % dots.length);
+    }
+    heroInterval = setInterval(nextHeroSlide, HERO_DELAY);
+  }, {passive:true});
+})();
 
 /* ============ INIT ============ */
 (function init(){
