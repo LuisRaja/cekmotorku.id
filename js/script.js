@@ -470,7 +470,7 @@ function renderWizard(){
       <div class="lineage-card anim d2">
         <b>Riwayat & Lineage Model</b><br>
         ${d.brand} ${d.model} diproduksi pada rentang ${d.yearMin}–${d.yearMax}. Unit tahun ${d.year} termasuk generasi ${d.year>=2020?'terbaru':(d.year>=2013?'menengah':'awal')}.
-        Profil akustik mesin & CVT untuk model ini telah dikalibrasi pada database AI cekMotormu.id.
+        Profil akustik mesin & CVT untuk model ini telah dikalibrasi pada database AI cekMotorku.id.
         Diagnosis akan mempertimbangkan karakteristik ${d.type.toLowerCase()} khas ${d.brand}, umur komponen sesuai tahun, serta pola keausan umum pada model ${d.model}.
       </div>
       <div class="wiz-nav anim d3">
@@ -499,7 +499,7 @@ function startChat(){
     addBubble('ai',`Halo! Aku siap bantu diagnosa <b>${state.activeMoto.brand} ${state.activeMoto.model} (${state.activeMoto.year})</b>. Bagian mana yang bermasalah?`);
   }else{
     sub.textContent='AI Diagnostic Assistant';
-    addBubble('ai','Halo! 👋 Aku asisten diagnosa cekMotormu.id. Keluhan motor kamu ada di bagian mana?');
+    addBubble('ai','Halo! 👋 Aku asisten diagnosa cekMotorku.id. Keluhan motor kamu ada di bagian mana?');
   }
   setTimeout(showComplaints,500);
 }
