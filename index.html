@@ -517,19 +517,9 @@
     <div class="screen-scroll" style="padding-top:0">
       <div class="flex items-center gap-1.5 px-5 py-2.5" id="view-toggle">
         <span class="radius-pill active" data-view="list" onclick="toggleView('list')">📋 Daftar</span>
-        <span class="radius-pill" data-view="map" onclick="toggleView('map')">🗺️ Peta</span>
+        <span class="radius-pill" data-view="map" onclick="toggleView('map')">📍 LIVE TRACKING</span>
         <span class="flex-1"></span>
         <span class="text-[10px] font-semibold text-txt3 tracking-wide" id="live-badge">● Live</span>
-      </div>
-
-      <div class="px-5 mb-2 anim d1">
-        <div class="flex gap-1.5 flex-wrap" id="radius-filter">
-          <span class="radius-pill active" data-radius="3" onclick="setRadius(3)">📍 3 km</span>
-          <span class="radius-pill" data-radius="5" onclick="setRadius(5)">📍 5 km</span>
-          <span class="radius-pill" data-radius="10" onclick="setRadius(10)">📍 10 km</span>
-          <span class="radius-pill" data-radius="25" onclick="setRadius(25)">📍 25 km</span>
-          <span class="radius-pill" data-radius="0" onclick="setRadius(0)">📍 Semua</span>
-        </div>
       </div>
 
       <div id="callout-list" class="px-5 flex flex-col gap-3" style="padding-bottom:80px"></div>

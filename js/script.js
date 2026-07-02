@@ -47,7 +47,7 @@ const SHOPS=[
 const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
 
 /* ============ GEOLOCATION & MAP ============ */
-let userLat=null, userLng=null, userRadius=3, watchId=null;
+let userLat=null, userLng=null, userRadius=0, watchId=null;
 let mapInstance=null, userMarker=null, bengkelMarkers=[];
 let currentView='list';
 
@@ -67,17 +67,6 @@ function onPositionUpdate(pos){
   const badge=document.getElementById('live-badge');
   if(badge)badge.textContent='● Live';
   // Re-render if callout or result screen is active
-  if(document.getElementById('callout')?.classList.contains('active')){
-    if(currentView==='list')renderCallout();
-    else renderMap();
-  }
-  const res=document.getElementById('result-body');
-  if(res&&res.closest('.active'))renderResultBody(state._lastEntry||state.history[state.history.length-1],false);
-}
-
-function setRadius(r){
-  userRadius=r;
-  document.querySelectorAll('#radius-filter .radius-pill').forEach(p=>p.classList.toggle('active',parseInt(p.dataset.radius)===r));
   if(document.getElementById('callout')?.classList.contains('active')){
     if(currentView==='list')renderCallout();
     else renderMap();
@@ -117,7 +106,7 @@ function sortByDist(arr){
 function emergencyMode(){
   if(userLat===null||userLng===null){ alert('Aktifkan lokasi dulu di Pengaturan.'); return; }
   const nearest=sortByDist(CALLOUT_REAL).slice(0,3);
-  if(nearest.length===0){ alert('Tidak ada bengkel dalam radius '+userRadius+' km'); return; }
+  if(nearest.length===0){ alert('Tidak ada bengkel ditemukan.'); return; }
   let msg='🚨 DARURAT — 3 Bengkel Terdekat:\n\n';
   nearest.forEach((b,i)=>{ msg+=(i+1)+'. '+b.nm+'\n   📏 '+b._distStr+' | ⏱️ '+b._time+'\n'; });
   msg+='\nHubungi bengkel terdekat?';
@@ -389,7 +378,7 @@ function renderCallout(){
   const pill=document.getElementById('loc-pill');
   if(pill)pill.textContent=userLat!==null?'📍 '+userLat.toFixed(3)+', '+userLng.toFixed(3):'📍 Bali';
   if(list.length===0){
-    document.getElementById('callout-list').innerHTML=`<div class="text-center py-12 text-txt3 font-semibold text-[14px]">📍 Tidak ada bengkel dalam radius ${userRadius} km</div>`;
+    document.getElementById('callout-list').innerHTML=`<div class="text-center py-12 text-txt3 font-semibold text-[14px]">📍 Tidak ada bengkel ditemukan</div>`;
     return;
   }
   document.getElementById('callout-list').innerHTML=list.map((c,i)=>{
@@ -615,7 +604,7 @@ function renderResultBody(entry,isFresh){
       <div class="section-title">📍 Bengkel Mitra — Bali</div>
       ${(()=>{
         const list = sortByDist(BENGKEL_REAL).slice(0,10);
-        if(list.length===0) return '<div class="text-center py-6 text-txt3 font-semibold text-[13px]">📍 Tidak ada bengkel dalam radius '+userRadius+' km</div>';
+        if(list.length===0) return '<div class="text-center py-6 text-txt3 font-semibold text-[13px]">📍 Tidak ada bengkel ditemukan</div>';
         return list.map(b=>`
         <div class="bengkel-card" onclick="openMaps(${b.lat},${b.lng})">
           <div class="bengkel-ic">🔧</div>
@@ -639,7 +628,7 @@ function renderResultBody(entry,isFresh){
       <div class="section-title">🚚 Panggil Bengkel ke Lokasi</div>
       ${(()=>{
         const list = sortByDist(CALLOUT_REAL).slice(0,10);
-        if(list.length===0) return '<div class="text-center py-6 text-txt3 font-semibold text-[13px]">📍 Tidak ada bengkel dalam radius '+userRadius+' km</div>';
+        if(list.length===0) return '<div class="text-center py-6 text-txt3 font-semibold text-[13px]">📍 Tidak ada bengkel ditemukan</div>';
         return list.map(c=>`
         <div class="call-card" style="margin-bottom:10px">
           <div class="flex items-center gap-3 mb-3">
