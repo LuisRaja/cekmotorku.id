@@ -82,6 +82,9 @@
     .pill-dot{ @apply w-[6px] h-[6px] rounded-full; background:currentColor; }
     .svc-pill{ @apply flex items-center gap-1.5 px-4 py-2.5 rounded-2xl text-[12.5px] font-bold border border-white/[.08] bg-surface2 text-txt2 whitespace-nowrap cursor-pointer transition-all duration-300 flex-shrink-0; }
     .svc-pill.active{ @apply bg-lime text-ink border-transparent shadow-lime; }
+    .radius-pill{ @apply px-3.5 py-2 rounded-full text-[12px] font-bold border border-white/[.08] bg-surface2 text-txt2 cursor-pointer transition-all duration-300; }
+    .radius-pill.active{ @apply bg-lime text-ink border-transparent shadow-lime; }
+    .radius-label{ @apply text-[11px] font-semibold text-txt3; }
     .hero-card{ @apply relative overflow-hidden rounded-[28px] p-6 min-h-[172px] flex flex-col gap-2 bg-gradient-to-br from-lime to-limedeep shadow-[0_10px_34px_rgba(198,255,60,.22)]; }
     .hero-tag{ @apply w-fit px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wide uppercase bg-black/20 text-ink/80 backdrop-blur-sm; }
     .hero-title{ @apply text-[22px] font-extrabold text-ink leading-[1.15] tracking-tight max-w-[58%]; }
@@ -268,6 +271,7 @@
   @keyframes pulseRec{0%{box-shadow:0 0 0 0 rgba(255,92,92,.55)}70%{box-shadow:0 0 0 20px rgba(255,92,92,0)}100%{box-shadow:0 0 0 0 rgba(255,92,92,0)}}
   .grad-text{ background:linear-gradient(135deg,#C6FF3C 0%,#93D400 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 </style>
+<script src="data_bengkel.js"></script>
 </head>
 <body>
 <div id="phone" class="relative z-10 w-full max-w-[420px] min-h-dvh flex flex-col bg-ink overflow-hidden mx-auto md:my-6 md:rounded-[52px] md:shadow-[0_0_0_10px_#1c1c1e,0_0_0_11px_#2a2a2e,0_0_70px_rgba(0,0,0,.7)]">
@@ -506,9 +510,14 @@
     </div>
 
     <div class="screen-scroll" style="padding-top:16px">
-      <div class="info-banner anim d1">
-        <span class="flex-shrink-0">ℹ️</span>
-        <span><b class="text-lime">Data contoh (dummy).</b> Nanti diganti dengan data mitra bengkel panggilan kamu.</span>
+      <div class="px-5 mb-3 anim d1">
+        <div class="flex gap-1.5 flex-wrap" id="radius-filter">
+          <span class="radius-pill active" data-radius="3" onclick="setRadius(3)">📍 3 km</span>
+          <span class="radius-pill" data-radius="5" onclick="setRadius(5)">📍 5 km</span>
+          <span class="radius-pill" data-radius="10" onclick="setRadius(10)">📍 10 km</span>
+          <span class="radius-pill" data-radius="25" onclick="setRadius(25)">📍 25 km</span>
+          <span class="radius-pill" data-radius="0" onclick="setRadius(0)">📍 Semua</span>
+        </div>
       </div>
       <div class="px-5 flex flex-col gap-3" id="callout-list"></div>
     </div>

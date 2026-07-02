@@ -34,14 +34,7 @@ const COMPLAINTS=[
     {sev:"warn",title:"Throttle Body Kotor",acc:"85.0",sol:["Bersihkan throttle body","Reset ISC/idle","Servis injeksi berkala"]}]}
 ];
 
-const BENGKEL=[
-  {nm:"AHASS Astra Motor Denpasar",ad:"Jl. Cokroaminoto No.44, Denpasar",dist:"2.1 km",rate:"4.8",lat:-8.6382,lng:115.2085},
-  {nm:"Yamaha Deta Denpasar",ad:"Jl. Teuku Umar No.188, Denpasar",dist:"3.4 km",rate:"4.7",lat:-8.6842,lng:115.2115},
-  {nm:"Bengkel Motor Kuta Jaya",ad:"Jl. Raya Kuta No.77, Badung",dist:"5.8 km",rate:"4.6",lat:-8.7205,lng:115.1750},
-  {nm:"Servis Motor Canggu",ad:"Jl. Pantai Berawa, Badung",dist:"7.2 km",rate:"4.9",lat:-8.6478,lng:115.1385},
-  {nm:"AHASS Ubud Motor",ad:"Jl. Raya Ubud No.12, Gianyar",dist:"9.5 km",rate:"4.7",lat:-8.5069,lng:115.2625},
-  {nm:"Planet Ban Gianyar",ad:"Jl. Ngurah Rai No.55, Gianyar",dist:"11.3 km",rate:"4.5",lat:-8.5430,lng:115.3260}
-];
+
 
 const SHOPS=[
   {nm:"Tokopedia",sub:"Spare part original bergaransi",ic:"🛍️",url:"https://www.tokopedia.com/search?st=product&q=sparepart+motor+original"},
@@ -49,14 +42,35 @@ const SHOPS=[
   {nm:"TikTok Shop",sub:"Live shopping spare part",ic:"🎵",url:"https://www.tiktok.com/search?q=sparepart%20motor%20original"}
 ];
 
-const CALLOUT=[
-  {nm:"Bli Made Mobile Service",spec:"Servis panggilan • Matic & Manual",area:"Denpasar",eta:"20–30 mnt",price:"Mulai Rp50rb",rate:"4.9",phone:"6281000000001",ic:"🛵",open:true},
-  {nm:"Ketut CVT Specialist",spec:"Spesialis CVT & tune-up",area:"Badung / Kuta",eta:"25–40 mnt",price:"Mulai Rp75rb",rate:"4.8",phone:"6281000000002",ic:"⚙️",open:true},
-  {nm:"Gede Rescue Motor 24 Jam",spec:"Darurat • Mogok • Aki soak",area:"Denpasar / Sanur",eta:"15–25 mnt",price:"Mulai Rp60rb",rate:"4.7",phone:"6281000000003",ic:"🔋",open:true},
-  {nm:"Wayan Ban Panggilan",spec:"Tambal & ganti ban di tempat",area:"Gianyar / Ubud",eta:"30–45 mnt",price:"Mulai Rp40rb",rate:"4.6",phone:"6281000000004",ic:"🛞",open:false}
-];
+
 
 const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+
+/* ============ GEOLOCATION ============ */
+let userLat=null, userLng=null, userRadius=3;
+
+function haversine(lat1,lng1,lat2,lng2){
+  const R=6371, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+function fmtDist(km){return km<1?Math.round(km*1000)+' m':km.toFixed(1)+' km';}
+function fmtTime(km){const m=Math.round(km/30*60);return m<60?m+' mnt':Math.floor(m/60)+' jam '+(m%60)+' mnt';}
+function setRadius(r){
+  userRadius=r;
+  document.querySelectorAll('#radius-filter .radius-pill').forEach(p=>p.classList.toggle('active',parseInt(p.dataset.radius)===r));
+  const el=document.getElementById('callout-list');
+  if(el&&el.closest('.active'))renderCallout();
+  const res=document.getElementById('result-body');
+  if(res&&res.closest('.active'))renderResultBody(state._lastEntry||state.history[state.history.length-1],false);
+}
+function sortByDist(arr){
+  if(userLat===null||userLng===null)return arr;
+  return arr.map(e=>{
+    const d=haversine(userLat,userLng,e.lat||-8.65,e.lng||115.22);
+    return {...e,_dist:d,_time:fmtTime(d),_distStr:fmtDist(d)};
+  }).filter(e=>userRadius===0||e._dist<=userRadius).sort((a,b)=>a._dist-b._dist);
+}
 
 /* ============ STATE ============ */
 let state={
@@ -116,7 +130,7 @@ function login(){
   go('menu');
 }
 function requestPermissions(){
-  try{if(navigator.geolocation)navigator.geolocation.getCurrentPosition(()=>{},()=>{},{timeout:8000});}catch(e){}
+  try{if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>{userLat=p.coords.latitude;userLng=p.coords.longitude;},()=>{},{timeout:8000,enableHighAccuracy:true});}catch(e){}
   try{if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)navigator.mediaDevices.getUserMedia({audio:true}).then(s=>s.getTracks().forEach(t=>t.stop())).catch(()=>{});}catch(e){}
 }
 function hydrateUser(){
@@ -256,24 +270,31 @@ function viewHistoryDetail(i){
 /* ============ CALLOUT ============ */
 function openCallout(){renderCallout();go('callout');}
 function renderCallout(){
-  document.getElementById('callout-list').innerHTML=CALLOUT.map((c,i)=>`
+  const list = sortByDist(CALLOUT_REAL);
+  if(list.length===0){
+    document.getElementById('callout-list').innerHTML=`<div class="text-center py-12 text-txt3 font-semibold text-[14px]">📍 Tidak ada bengkel dalam radius ${userRadius} km</div>`;
+    return;
+  }
+  document.getElementById('callout-list').innerHTML=list.map((c,i)=>{
+    const d = c._dist!==undefined ? `<span class="chip">📏 ${c._distStr}</span><span class="chip">⏱️ ${c._time}</span>` : '';
+    return `
     <div class="call-card anim d${Math.min(i+2,6)}">
       <div class="flex items-center gap-3 mb-3">
-        <div class="call-ic">${c.ic}</div>
-        <div class="min-w-0 flex-1"><div class="call-nm">${c.nm}</div><div class="call-sp">${c.spec}</div></div>
-        <div class="call-rt">⭐ ${c.rate}</div>
+        <div class="call-ic">${c.ic||'🛵'}</div>
+        <div class="min-w-0 flex-1"><div class="call-nm">${c.nm}</div><div class="call-sp">${c.spec||'Bengkel Motor'}</div></div>
+        <div class="call-rt">⭐ ${c.rate||'4.5'}</div>
       </div>
       <div class="flex gap-1.5 flex-wrap mb-3">
         <span class="chip">📍 ${c.area}</span>
-        <span class="chip">⏱️ ${c.eta}</span>
-        <span class="chip">💸 ${c.price}</span>
+        ${d}
         <span class="chip ${c.open?'green':''}">${c.open?'🟢 Buka':'⚪ Tutup'}</span>
       </div>
       <button class="call-cta-btn" onclick="callMechanic('${c.phone}','${c.nm.replace(/'/g,"")}',${c.open})">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
         Panggil Mekanik
       </button>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 function callMechanic(phone,nm,open){
   if(!open){alert(nm+' sedang tutup. Coba mekanik lain yang berstatus Buka.');return;}
@@ -442,6 +463,7 @@ function showResult(){
   const diag=c.diag[Math.floor(Math.random()*c.diag.length)];
   const motoName=(state.chatMode==='moto'&&state.activeMoto)?`${state.activeMoto.brand} ${state.activeMoto.model} ${state.activeMoto.year}`:'Motor kamu';
   const entry={ts:Date.now(),title:diag.title,sev:diag.sev,acc:diag.acc,sol:diag.sol,motoName,complaintKey:c.key};
+  state._lastEntry=entry;
   state.history.push(entry);
   save();hydrateHome();
   renderResultBody(entry,true);
@@ -474,12 +496,16 @@ function renderResultBody(entry,isFresh){
 
     <div class="res-panel" data-panel="bengkel">
       <div class="section-title">📍 Bengkel Mitra — Bali</div>
-      ${BENGKEL.map(b=>`
+      ${(()=>{
+        const list = sortByDist(BENGKEL_REAL).slice(0,10);
+        if(list.length===0) return '<div class="text-center py-6 text-txt3 font-semibold text-[13px]">📍 Tidak ada bengkel dalam radius '+userRadius+' km</div>';
+        return list.map(b=>`
         <div class="bengkel-card" onclick="openMaps(${b.lat},${b.lng})">
           <div class="bengkel-ic">🔧</div>
-          <div class="min-w-0 flex-1"><div class="bengkel-nm">${b.nm}</div><div class="bengkel-ad">${b.ad}</div></div>
-          <div class="text-right flex-shrink-0"><div class="bengkel-dist">${b.dist}</div><div class="bengkel-rate">⭐ ${b.rate}</div></div>
-        </div>`).join('')}
+          <div class="min-w-0 flex-1"><div class="bengkel-nm">${b.nm}</div><div class="bengkel-ad">${b.ad||b.area}</div></div>
+          <div class="text-right flex-shrink-0"><div class="bengkel-dist">${b._distStr||'?'}</div><div class="bengkel-rate">⭐ ${b.rate||'4.5'}</div></div>
+        </div>`).join('');
+      })()}
     </div>
 
     <div class="res-panel" data-panel="sparepart">
@@ -494,24 +520,25 @@ function renderResultBody(entry,isFresh){
 
     <div class="res-panel" data-panel="panggil">
       <div class="section-title">🚚 Panggil Bengkel ke Lokasi</div>
-      <div class="info-banner" style="margin:0 0 12px">
-        <span>ℹ️</span>
-        <span>Mekanik datang langsung ke lokasimu. <b class="text-lime">Data contoh (dummy).</b></span>
-      </div>
-      ${CALLOUT.map(c=>`
+      ${(()=>{
+        const list = sortByDist(CALLOUT_REAL).slice(0,10);
+        if(list.length===0) return '<div class="text-center py-6 text-txt3 font-semibold text-[13px]">📍 Tidak ada bengkel dalam radius '+userRadius+' km</div>';
+        return list.map(c=>`
         <div class="call-card" style="margin-bottom:10px">
           <div class="flex items-center gap-3 mb-3">
-            <div class="call-ic">${c.ic}</div>
-            <div class="min-w-0 flex-1"><div class="call-nm">${c.nm}</div><div class="call-sp">${c.spec}</div></div>
-            <div class="call-rt">⭐ ${c.rate}</div>
+            <div class="call-ic">${c.ic||'🛵'}</div>
+            <div class="min-w-0 flex-1"><div class="call-nm">${c.nm}</div><div class="call-sp">${c.spec||'Bengkel Motor'}</div></div>
+            <div class="call-rt">⭐ ${c.rate||'4.5'}</div>
           </div>
           <div class="flex gap-1.5 flex-wrap mb-3">
             <span class="chip">📍 ${c.area}</span>
-            <span class="chip">⏱️ ${c.eta}</span>
-            <span class="chip ${c.open?'green':''}">🟢 ${c.open?'Buka':'Tutup'}</span>
+            <span class="chip">📏 ${c._distStr||'?'}</span>
+            <span class="chip">⏱️ ${c._time||'?'}</span>
+            <span class="chip ${c.open?'green':''}">${c.open?'🟢 Buka':'⚪ Tutup'}</span>
           </div>
           <button class="call-cta-btn" onclick="callMechanic('${c.phone}','${c.nm.replace(/'/g,"")}',${c.open})">📞 Panggil Mekanik</button>
-        </div>`).join('')}
+        </div>`).join('');
+      })()}
     </div>
 
     <div class="result-nav anim d3">
