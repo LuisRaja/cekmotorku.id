@@ -272,6 +272,8 @@
   .grad-text{ background:linear-gradient(135deg,#C6FF3C 0%,#93D400 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 </style>
 <script src="data_bengkel.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 <div id="phone" class="relative z-10 w-full max-w-[420px] min-h-dvh flex flex-col bg-ink overflow-hidden mx-auto md:my-6 md:rounded-[52px] md:shadow-[0_0_0_10px_#1c1c1e,0_0_0_11px_#2a2a2e,0_0_70px_rgba(0,0,0,.7)]">
@@ -506,11 +508,21 @@
           <span class="text-[11px] font-semibold text-txt3 uppercase tracking-wide">Mekanik datang ke lokasimu</span>
         </div>
       </div>
-      <div class="loc-pill">📍 Bali</div>
+      <div class="flex items-center gap-1.5">
+        <button class="text-[11px] font-bold px-2.5 py-1.5 rounded-lg bg-surface2 border border-white/[.08] text-danger hover:bg-danger/10 transition-all" onclick="emergencyMode()" title="Darurat">🚨</button>
+        <div class="loc-pill" id="loc-pill">📍 ${userLat!==null?userLat.toFixed(2)+', '+userLng.toFixed(2):'Bali'}</div>
+      </div>
     </div>
 
-    <div class="screen-scroll" style="padding-top:16px">
-      <div class="px-5 mb-3 anim d1">
+    <div class="screen-scroll" style="padding-top:0">
+      <div class="flex items-center gap-1.5 px-5 py-2.5" id="view-toggle">
+        <span class="radius-pill active" data-view="list" onclick="toggleView('list')">📋 Daftar</span>
+        <span class="radius-pill" data-view="map" onclick="toggleView('map')">🗺️ Peta</span>
+        <span class="flex-1"></span>
+        <span class="text-[10px] font-semibold text-txt3 tracking-wide" id="live-badge">● Live</span>
+      </div>
+
+      <div class="px-5 mb-2 anim d1">
         <div class="flex gap-1.5 flex-wrap" id="radius-filter">
           <span class="radius-pill active" data-radius="3" onclick="setRadius(3)">📍 3 km</span>
           <span class="radius-pill" data-radius="5" onclick="setRadius(5)">📍 5 km</span>
@@ -519,7 +531,10 @@
           <span class="radius-pill" data-radius="0" onclick="setRadius(0)">📍 Semua</span>
         </div>
       </div>
-      <div class="px-5 flex flex-col gap-3" id="callout-list"></div>
+
+      <div id="callout-list" class="px-5 flex flex-col gap-3" style="padding-bottom:80px"></div>
+
+      <div id="map-container" style="display:none; height:55vh; margin:0 16px 80px" class="rounded-[22px] overflow-hidden border border-white/[.06]"></div>
     </div>
   </section>
 

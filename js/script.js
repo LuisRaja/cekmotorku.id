@@ -46,8 +46,10 @@ const SHOPS=[
 
 const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
 
-/* ============ GEOLOCATION ============ */
-let userLat=null, userLng=null, userRadius=3;
+/* ============ GEOLOCATION & MAP ============ */
+let userLat=null, userLng=null, userRadius=3, watchId=null;
+let mapInstance=null, userMarker=null, bengkelMarkers=[];
+let currentView='list';
 
 function haversine(lat1,lng1,lat2,lng2){
   const R=6371, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
@@ -56,20 +58,120 @@ function haversine(lat1,lng1,lat2,lng2){
 }
 function fmtDist(km){return km<1?Math.round(km*1000)+' m':km.toFixed(1)+' km';}
 function fmtTime(km){const m=Math.round(km/30*60);return m<60?m+' mnt':Math.floor(m/60)+' jam '+(m%60)+' mnt';}
-function setRadius(r){
-  userRadius=r;
-  document.querySelectorAll('#radius-filter .radius-pill').forEach(p=>p.classList.toggle('active',parseInt(p.dataset.radius)===r));
-  const el=document.getElementById('callout-list');
-  if(el&&el.closest('.active'))renderCallout();
+
+function onPositionUpdate(pos){
+  userLat=pos.coords.latitude;
+  userLng=pos.coords.longitude;
+  const pill=document.getElementById('loc-pill');
+  if(pill)pill.textContent='📍 '+userLat.toFixed(3)+', '+userLng.toFixed(3);
+  const badge=document.getElementById('live-badge');
+  if(badge)badge.textContent='● Live';
+  // Re-render if callout or result screen is active
+  if(document.getElementById('callout')?.classList.contains('active')){
+    if(currentView==='list')renderCallout();
+    else renderMap();
+  }
   const res=document.getElementById('result-body');
   if(res&&res.closest('.active'))renderResultBody(state._lastEntry||state.history[state.history.length-1],false);
 }
+
+function setRadius(r){
+  userRadius=r;
+  document.querySelectorAll('#radius-filter .radius-pill').forEach(p=>p.classList.toggle('active',parseInt(p.dataset.radius)===r));
+  if(document.getElementById('callout')?.classList.contains('active')){
+    if(currentView==='list')renderCallout();
+    else renderMap();
+  }
+  const res=document.getElementById('result-body');
+  if(res&&res.closest('.active'))renderResultBody(state._lastEntry||state.history[state.history.length-1],false);
+}
+
+function toggleView(v){
+  currentView=v;
+  const scroll=document.querySelector('#callout .screen-scroll');
+  document.querySelectorAll('#view-toggle .radius-pill').forEach(p=>p.classList.toggle('active',p.dataset.view===v));
+  if(v==='list'){
+    if(scroll)scroll.style.overflow='auto';
+    document.getElementById('map-container').style.display='none';
+    document.getElementById('callout-list').style.display='flex';
+    renderCallout();
+  }else{
+    if(scroll)scroll.style.overflow='hidden';
+    document.getElementById('callout-list').style.display='none';
+    document.getElementById('map-container').style.display='block';
+    // Fill remaining height
+    const top=document.getElementById('map-container').getBoundingClientRect().top;
+    document.getElementById('map-container').style.height=(window.innerHeight-top-20)+'px';
+    renderMap();
+  }
+}
+
 function sortByDist(arr){
   if(userLat===null||userLng===null)return arr;
   return arr.map(e=>{
     const d=haversine(userLat,userLng,e.lat||-8.65,e.lng||115.22);
     return {...e,_dist:d,_time:fmtTime(d),_distStr:fmtDist(d)};
   }).filter(e=>userRadius===0||e._dist<=userRadius).sort((a,b)=>a._dist-b._dist);
+}
+
+function emergencyMode(){
+  if(userLat===null||userLng===null){ alert('Aktifkan lokasi dulu di Pengaturan.'); return; }
+  const nearest=sortByDist(CALLOUT_REAL).slice(0,3);
+  if(nearest.length===0){ alert('Tidak ada bengkel dalam radius '+userRadius+' km'); return; }
+  let msg='🚨 DARURAT — 3 Bengkel Terdekat:\n\n';
+  nearest.forEach((b,i)=>{ msg+=(i+1)+'. '+b.nm+'\n   📏 '+b._distStr+' | ⏱️ '+b._time+'\n'; });
+  msg+='\nHubungi bengkel terdekat?';
+  if(confirm(msg)) callMechanic(nearest[0].phone,nearest[0].nm,true);
+}
+
+function initMap(){
+  if(mapInstance) return;
+  const container=document.getElementById('map-container');
+  if(!container) return;
+  mapInstance=L.map('map-container',{zoomControl:false}).setView([-8.65,115.22],11);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
+  }).addTo(mapInstance);
+  L.control.zoom({position:'bottomright'}).addTo(mapInstance);
+}
+
+function renderMap(){
+  if(!mapInstance) initMap();
+  setTimeout(()=>{ if(mapInstance) mapInstance.invalidateSize(); },100);
+  if(!mapInstance) return;
+  // Clear old markers
+  if(userMarker) mapInstance.removeLayer(userMarker);
+  bengkelMarkers.forEach(m=>mapInstance.removeLayer(m));
+  bengkelMarkers=[];
+
+  if(userLat!==null&&userLng!==null){
+    const icon=L.divIcon({html:'<div style="width:16px;height:16px;background:#C6FF3C;border:3px solid #0B0C0E;border-radius:50%;box-shadow:0 0 12px rgba(198,255,60,.6)"></div>',iconSize:[16,16],iconAnchor:[8,8]});
+    userMarker=L.marker([userLat,userLng],{icon,zIndexOffset:1000}).addTo(mapInstance);
+  }
+
+  const list=sortByDist(CALLOUT_REAL);
+  if(list.length===0) return;
+  const bounds=[];
+  if(userLat!==null&&userLng!==null) bounds.push([userLat,userLng]);
+
+  list.slice(0,30).forEach(b=>{
+    const icon=L.divIcon({html:'<div style="width:22px;height:22px;background:#1E2023;border:2px solid #C6FF3C;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 2px 8px rgba(0,0,0,.4)">🛵</div>',iconSize:[22,22],iconAnchor:[11,11]});
+    const m=L.marker([b.lat,b.lng],{icon}).addTo(mapInstance);
+    m.bindPopup(`
+      <div style="font-family:sans-serif;font-size:13px;max-width:200px;color:#111">
+        <b>${b.nm}</b><br>
+        <span style="color:#666">${b.area}</span><br>
+        📏 ${b._distStr||'?'} · ⏱️ ${b._time||'?'}<br>
+        ⭐ ${b.rate||'4.5'} ${b.open?'🟢 Buka':'⚪ Tutup'}<br>
+        <a href="https://wa.me/${b.phone}" target="_blank" style="display:inline-block;margin-top:6px;padding:4px 12px;background:#25D366;color:#fff;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">📞 Hubungi</a>
+        <a href="https://maps.google.com/dir/?api=1&destination=${b.lat},${b.lng}" target="_blank" style="display:inline-block;margin-top:6px;margin-left:4px;padding:4px 12px;background:#4285F4;color:#fff;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">🗺️ Rute</a>
+      </div>`);
+    bengkelMarkers.push(m);
+    bounds.push([b.lat,b.lng]);
+  });
+
+  if(bounds.length>1) mapInstance.fitBounds(bounds,{padding:[40,40],maxZoom:14});
+  else if(bounds.length===1) mapInstance.setView(bounds[0],13);
 }
 
 /* ============ STATE ============ */
@@ -130,7 +232,12 @@ function login(){
   go('menu');
 }
 function requestPermissions(){
-  try{if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>{userLat=p.coords.latitude;userLng=p.coords.longitude;},()=>{},{timeout:8000,enableHighAccuracy:true});}catch(e){}
+  try{
+    if(navigator.geolocation){
+      if(watchId!==null)navigator.geolocation.clearWatch(watchId);
+      watchId=navigator.geolocation.watchPosition(onPositionUpdate,()=>{}, {timeout:8000,enableHighAccuracy:true,maximumAge:5000});
+    }
+  }catch(e){}
   try{if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)navigator.mediaDevices.getUserMedia({audio:true}).then(s=>s.getTracks().forEach(t=>t.stop())).catch(()=>{});}catch(e){}
 }
 function hydrateUser(){
@@ -268,9 +375,19 @@ function viewHistoryDetail(i){
 }
 
 /* ============ CALLOUT ============ */
-function openCallout(){renderCallout();go('callout');}
+function openCallout(){
+  currentView='list';
+  document.querySelectorAll('#view-toggle .radius-pill').forEach(p=>p.classList.toggle('active',p.dataset.view==='list'));
+  document.getElementById('map-container').style.display='none';
+  document.getElementById('callout-list').style.display='flex';
+  renderCallout();
+  go('callout');
+  setTimeout(()=>{if(mapInstance)mapInstance.invalidateSize();},300);
+}
 function renderCallout(){
   const list = sortByDist(CALLOUT_REAL);
+  const pill=document.getElementById('loc-pill');
+  if(pill)pill.textContent=userLat!==null?'📍 '+userLat.toFixed(3)+', '+userLng.toFixed(3):'📍 Bali';
   if(list.length===0){
     document.getElementById('callout-list').innerHTML=`<div class="text-center py-12 text-txt3 font-semibold text-[14px]">📍 Tidak ada bengkel dalam radius ${userRadius} km</div>`;
     return;
